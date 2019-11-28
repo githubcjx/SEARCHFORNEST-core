@@ -53,6 +53,36 @@ class HouseController extends Controller {
       ctx.helper.error({ ctx, err, code: 5001, msg: err.message })
     }
   }
+  async getRelease() {
+    const { ctx, service } = this
+    try {
+      let payload = ctx.request.body || {}
+      const res = await service.houseService.getRelease(payload)
+      ctx.helper.success({ ctx, res, code: 200 })
+    } catch (err) {
+      ctx.helper.error({ ctx, err, code: 5001, msg: err.message })
+    }
+  }
+  async record() {
+    const { ctx, service } = this
+    try {
+      let payload = ctx.request.body || {}
+      const res = await service.houseService.record(payload)
+      ctx.helper.success({ ctx, res, code: 200 })
+    } catch (err) {
+      ctx.helper.error({ ctx, err, code: 5001, msg: err.message })
+    }
+  }
+  async getRecord() {
+    const { ctx, service } = this
+    try {
+      let payload = ctx.request.body || {}
+      const res = await service.houseService.getRecord(payload)
+      ctx.helper.success({ ctx, res, code: 200 })
+    } catch (err) {
+      ctx.helper.error({ ctx, err, code: 5001, msg: err.message })
+    }
+  }
 }
 
 module.exports = HouseController;

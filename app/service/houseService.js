@@ -43,14 +43,17 @@ class houseService extends Service {
     const user = await app.mysql.get('user', {
       openid: list.openid
     })
-    const like = await app.mysql.get('user_collection', {
-      house_id: params.house_id,
-      openid: list.openid
-    })
-    if (like) {
-      list.like = like.islike
+    if (params.islogin) {
+      const like = await app.mysql.get('user_collection', {
+        house_id: params.house_id,
+        openid: list.openid
+      })
+      if (like) {
+        list.like = like.islike
+      }
     }
     list.gender = user.gender
+    list.avatarurl = user.avatarurl
     return list
   }
   async like(params) {
@@ -92,6 +95,46 @@ class houseService extends Service {
       })
       item.like = 1
       result.push(item)
+    }
+    return result
+  }
+  async getRelease(params) {
+    const { app } = this
+    const release = await app.mysql.select('house_info', {
+      where: {
+        openid: params.openid
+      }
+    })
+    return release
+  }
+  async record(params) {
+    const { app } = this
+    const result = await app.mysql.get('house_record', {
+      house_id: params.house_id
+    })
+    if (result) {
+      await app.mysql.delete('house_record', {
+        house_id: params.house_id
+      })
+    }
+    await app.mysql.insert('house_record', {
+      house_id: params.house_id
+    })
+    // return true
+  }
+  async getRecord(params) {
+    const { app } = this
+    const result = []
+    const records = await app.mysql.select('house_record', {
+      columns: ['house_id']
+    })
+    for (let i of records) {
+      const res = await app.mysql.select('house_info', {
+        where: {
+          house_id: i.house_id
+        }
+      })
+      result.unshift(res[0])
     }
     return result
   }
